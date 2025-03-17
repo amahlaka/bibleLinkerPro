@@ -68,7 +68,7 @@ export class MainSettingTab extends PluginSettingTab {
 					.addOption("nl", "Nederlands")
 					.addOption("de", "Deutsch")
 					.addOption("pt-br", "Português (Brasil)")
-					.addOption("fi", "Finnish")
+					.addOption("fi", "Suomi")
 					.setValue(
 						this.plugin.settings.pluginLanguage != moment.locale()
 							? this.plugin.settings.pluginLanguage
@@ -88,11 +88,50 @@ export class MainSettingTab extends PluginSettingTab {
 							}
 						} else {
 							this.plugin.settings.pluginLanguage = value;
+							if (!this.plugin.settings.overrideLanguage) {
+								this.plugin.settings.bibleLanguage = value;
+							}
 							await this.plugin.saveSettings();
 						}
 						this.display();
 					})
 			);
+		new Setting(containerEl)
+			.setName(this.getTranslation("OVERRIDE_LANGUAGE"))
+			.setDesc(this.getTranslation("OVERRIDE_LANGUAGE_DESC"))
+			.addToggle((Boolean) =>
+				Boolean.setValue(this.plugin.settings.overrideLanguage).onChange(
+					async (value) => {
+						this.plugin.settings.overrideLanguage = value;
+						if (!value) {
+							this.plugin.settings.bibleLanguage = this.plugin.settings.pluginLanguage;
+						}
+						await this.plugin.saveSettings();
+					}
+				)
+			);
+			// if turned on, show the language override
+		if (this.plugin.settings.overrideLanguage) {
+			new Setting(containerEl)
+				.setName(this.getTranslation("BIBLE_LANGUAGE_CODE"))
+				.setDesc(this.getTranslation("BIBLE_LANGUAGE_CODE_DESC"))
+				.addDropdown((String) =>
+					String.addOption("?", "N/A")
+						.addOption("en", "English")
+						.addOption("fr", "Français")
+						.addOption("nl", "Nederlands")
+						.addOption("de", "Deutsch")
+						.addOption("pt-br", "Português (Brasil)")
+						.addOption("fi", "Suomi")
+						.setValue(this.plugin.settings.bibleLanguage)
+						.onChange(async (value) => {
+							this.plugin.settings.bibleLanguage = value;
+							await this.plugin.saveSettings();
+						}
+					)
+				);
+						
+		}
 
 		new Setting(containerEl)
 			.setName("🧠 " + this.getTranslation("PROCESSING"))

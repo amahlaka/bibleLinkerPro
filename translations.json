@@ -30,7 +30,12 @@
 		"CLEAR_LINK_SUFFIX": "Clear link suffix",
 		"INVALID_INPUT": "Invalid Bible text input! Before you execute this command you need to select a valid Bible text like: '1 th 1:3-8'.",
 		"AUTO_OPEN_LINK": "Automatically open generated link",
-		"AUTO_OPEN_LINK_DESC": "Automatically opens generated links in JW Library."
+		"AUTO_OPEN_LINK_DESC": "Automatically opens generated links in JW Library.",
+		"OVERRIDE_LANGUAGE": "Use different language for Bible book names",
+		"OVERRIDE_LANGUAGE_DESC": "Allows selecting the language of the typed Bible book names seperate from the language of the plugin",
+		"BIBLE_LANGUAGE_CODE": "Input language",
+		"BIBLE_LANGUAGE_CODE_DESC": "The language to use for recognizing Bible book names"
+
 	},
 	"nl": {
 		"ABOUT": "Over",
@@ -63,7 +68,11 @@
 		"CLEAR_LINK_SUFFIX": "Wis link suffix",
 		"INVALID_INPUT": "Ongeldige Bijbeltekst! Voordat je dit commando uitvoert moet je een geldige Bijbeltekst selecteren, zoals: '1 th 1:3-8'.",
 		"AUTO_OPEN_LINK": "Open een gegenereerde link automatisch",
-		"AUTO_OPEN_LINK_DESC": "Opent de gegenereerde linken automatisch in JW Library."
+		"AUTO_OPEN_LINK_DESC": "Opent de gegenereerde linken automatisch in JW Library.",
+		"OVERRIDE_LANGUAGE": "Gebruik een andere taal voor Bijbelboeknamen",
+		"OVERRIDE_LANGUAGE_DESC": "Maakt het mogelijk om een andere taal te selecteren voor de getypte Bijbelboeknamen dan de taal van de plugin",
+		"BIBLE_LANGUAGE_CODE": "Invoertaal",
+		"BIBLE_LANGUAGE_CODE_DESC": "De taal die gebruikt wordt voor het herkennen van Bijbelboeknamen"
 	},
 	"fr": {
 		"ABOUT": "A Propos",
@@ -96,7 +105,11 @@
 		"CLEAR_LINK_SUFFIX": "Nettoyer le suffixe du lien",
 		"INVALID_INPUT": "Texte biblique d'entré invalide! Avant d'éxecuter la commande vous devez selectionner un texte biblique valide comme: '1 th 1:3-8'.",
 		"AUTO_OPEN_LINK": "Ouvrir automatiquement le lien géneré",
-		"AUTO_OPEN_LINK_DESC": "Ouvrir automatiquement le lien géneré dans JW Library."
+		"AUTO_OPEN_LINK_DESC": "Ouvrir automatiquement le lien géneré dans JW Library.",
+		"OVERRIDE_LANGUAGE": "Utiliser une langue différente pour les noms des livres de la Bible",
+		"OVERRIDE_LANGUAGE_DESC": "Permet de sélectionner la langue des noms des livres de la Bible tapés, différente de la langue du plugin",
+		"BIBLE_LANGUAGE_CODE": "Langue d'entrée",
+		"BIBLE_LANGUAGE_CODE_DESC": "La langue à utiliser pour reconnaître les noms des livres de la Bible"
 	},
 	"pt-br": {
 		"ABOUT": "Sobre",
@@ -129,7 +142,11 @@
 		"CLEAR_LINK_SUFFIX": "Limpar sufixo do link",
 		"INVALID_INPUT": "Texto bíblico inválido! Antes de executar este comando você precisa selecionar um texto bíblico válido como: '1 tim 1:3-8'.",
 		"AUTO_OPEN_LINK": "Abrir link automaticamente",
-		"AUTO_OPEN_LINK_DESC": "Abrir automaticamente no JW Library."
+		"AUTO_OPEN_LINK_DESC": "Abrir automaticamente no JW Library.",
+		"OVERRIDE_LANGUAGE": "Usar um idioma diferente para os nomes dos livros da Bíblia",
+		"OVERRIDE_LANGUAGE_DESC": "Permite selecionar o idioma dos nomes dos livros da Bíblia digitados, separado do idioma do plugin",
+		"BIBLE_LANGUAGE_CODE": "Idioma de entrada",
+		"BIBLE_LANGUAGE_CODE_DESC": "O idioma a ser usado para reconhecer os nomes dos livros da Bíblia"
 	},
 	"de": {
 		"ABOUT": "Über",
@@ -162,11 +179,15 @@
 		"CLEAR_LINK_SUFFIX": "Entferne die hintere Ergänzung",
 		"INVALID_INPUT": "Ungültiger Bibeltextinput! Vor dem Ausführen des Befehls musst du einen validen Bibeltext angeben, wie: '1 thes 1:3-8'.",
 		"AUTO_OPEN_LINK": "Automatisches öffenen des generierten Links",
-		"AUTO_OPEN_LINK_DESC": "Öffnet den generierten Link automatisch in der JW Libary."
+		"AUTO_OPEN_LINK_DESC": "Öffnet den generierten Link automatisch in der JW Libary.",
+		"OVERRIDE_LANGUAGE": "Verwenden Sie eine andere Sprache für Bibelbuchnamen",
+		"OVERRIDE_LANGUAGE_DESC": "Ermöglicht die Auswahl der Sprache der eingegebenen Bibelbuchnamen, getrennt von der Sprache des Plugins",
+		"BIBLE_LANGUAGE_CODE": "Eingabesprache",
+		"BIBLE_LANGUAGE_CODE_DESC": "Die Sprache, die zum Erkennen von Bibelbuchnamen verwendet wird"
 	},
 	"fi": {
 		"ABOUT": "Tietoja",
-		"CREATED_WITH_LOVE": "Luotu ❤️ rakkaudella",
+		"CREATED_WITH_LOVE": "Tehty ❤️ rakkaudella",
 		"DOCUMENTATION": "Dokumentaatio",
 		"CHANGELOG": "Muutosloki",
 		"LANGUAGE": "Kieli",
@@ -195,6 +216,10 @@
 		"CLEAR_LINK_SUFFIX": "Tyhjennä linkin jälkiliite",
 		"INVALID_INPUT": "Virheellinen Raamatun tekstin syöte! Ennen kuin suoritat tämän komennon, sinun on valittava kelvollinen Raamatun teksti, kuten: '1 te 1:3-8'.",
 		"AUTO_OPEN_LINK": "Avaa luotu linkki automaattisesti",
-		"AUTO_OPEN_LINK_DESC": "Avaa luodut linkit automaattisesti JW Libraryssa."
+		"AUTO_OPEN_LINK_DESC": "Avaa luodut linkit automaattisesti JW Libraryssa.",
+		"OVERRIDE_LANGUAGE": "Käytä eri kieltä Raamatun kirjojen nimille",
+		"OVERRIDE_LANGUAGE_DESC": "Mahdollistaa kirjoitettujen Raamatun kirjojen nimien kielen valitsemisen erikseen pluginin kielestä",
+		"BIBLE_LANGUAGE_CODE": "Syöttökieli",
+		"BIBLE_LANGUAGE_CODE_DESC": "Kieli, jota käytetään Raamatun kirjojen nimien tunnistamiseen"
 	}
 }

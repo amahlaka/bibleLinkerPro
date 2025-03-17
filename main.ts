@@ -1,6 +1,7 @@
 import { MainSettingTab } from "settings";
 // import { ExampleView, VIEW_TYPE_EXAMPLE } from "ExampleView";
 import * as translations from "translations.json";
+import  { bibleBooksMap } from "./bibleBooks.js";
 import { moment } from "obsidian";
 
 import {
@@ -26,6 +27,8 @@ interface PluginSettings {
 	linkPrefix: string;
 	linkSuffix: string;
 	lastVersion: string;
+	overrideLanguage: boolean;
+	bibleLanguage: string;
 }
 
 const DEFAULT_SETTINGS: Partial<PluginSettings> = {
@@ -40,6 +43,8 @@ const DEFAULT_SETTINGS: Partial<PluginSettings> = {
 	linkPrefix: "",
 	linkSuffix: "",
 	lastVersion: "",
+	overrideLanguage: false,
+	bibleLanguage: "?",
 };
 
 const translationsTyped: { [key: string]: { [key: string]: string } } =
@@ -128,559 +133,54 @@ export default class BibleLinkerPro extends Plugin {
 
 				input = input.trim();
 
-				const bibleBooksEN = [
-					["ge", "gen", "genesis"],
-					["ex", "exodus"],
-					["le", "lev", "leviticus"],
-					["nu", "num", "numbers"],
-					["de", "deut", "deuteronomy"],
-					["jos", "josh", "joshua"],
-					["jg", "judg", "judges"],
-					["ru", "ruth"],
-					["1sa", "1sam", "1samuel"],
-					["2sa", "2sam", "2samuel"],
-					["1ki", "1kings"],
-					["2ki", "2kings"],
-					["1ch", "1chron", "1chronicles"],
-					["2ch", "2chron", "2chronicles"],
-					["ezr", "ezra"],
-					["ne", "neh", "nehemiah"],
-					["es", "esther"],
-					["job", "job"],
-					["ps", "psalms", "psalm"],
-					["pr", "prov", "proverbs"],
-					["ec", "eccl", "ecclesiastes"],
-					["ca", "song of sol", "song of solomon"],
-					["isa", "isa", "isaiah"],
-					["jer", "jer", "jeremiah"],
-					["la", "lam", "lamentations"],
-					["eze", "ezek", "ezekiel"],
-					["da", "dan", "daniël"],
-					["ho", "hos", "hosea"],
-					["joe", "joel"],
-					["am", "amos"],
-					["ob", "obad", "obadiah"],
-					["jon", "jonah"],
-					["mic", "mic", "micah"],
-					["na", "nah", "nahum"],
-					["hab", "habakkuk"],
-					["zep", "zeph", "zephaniah"],
-					["hag", "haggaï"],
-					["zec", "zech", "zechariah"],
-					["mal", "malachi"],
-					["mt", "matt", "matthew"],
-					["mr", "mark", "mark"],
-					["lu", "luke"],
-					["joh", "john"],
-					["ac", "acts"],
-					["ro", "rom", "romans"],
-					["1co", "1cor", "1corinthians"],
-					["2co", "2cor", "2corinthians"],
-					["ga", "gal", "galatians"],
-					["eph", "ephesians"],
-					["php", "phil", "philippians"],
-					["col", "kolossenzen", "colossians"],
-					["1th", "1thess", "1thessalonians"],
-					["2th", "2thess", "2thessalonians"],
-					["1ti", "1tim", "1timothy"],
-					["2ti", "2tim", "2timothy"],
-					["tit", "titus"],
-					["phm", "philem", "philemon"],
-					["heb", "hebr", "hebrews"],
-					["jas", "james"],
-					["1pe", "1pet", "1peter"],
-					["2pe", "2pet", "2peter"],
-					["1jo", "1john"],
-					["2jo", "2john"],
-					["3jo", "3john"],
-					["jude", "jude"],
-					["re", "rev", "revelation"],
-				];
-
-				const bibleBooksNL = [
-					["ge", "gen", "genesis"],
-					["ex", "exodus"],
-					["le", "lev", "leviticus"],
-					["nu", "num", "numeri"],
-					["de", "deut", "deuteronomium"],
-					["joz", "jozua"],
-					["re", "recht", "rechters"],
-					["ru", "ruth"],
-					["1sa", "1sam", "1samuël"],
-					["2sa", "2sam", "2samuël"],
-					["1kon", "1koningen"],
-					["2kon", "2koningen"],
-					["1kr", "1kronieken"],
-					["2kr", "2kronieken"],
-					["ezr", "ezra"],
-					["ne", "nehemiah"],
-					["es", "esther"],
-					["job", "job"],
-					["ps", "psalmen", "psalm"],
-					["sp", "spreuken"],
-					["pr", "pred", "prediker"],
-					["hgl", "hooglied"],
-					["jes", "jesaja"],
-					["jer", "jeremia"],
-					["klg", "klaagl", "klaagliederen"],
-					["ez", "ezech", "ezechiël"],
-					["da", "dan", "daniël"],
-					["ho", "hos", "hosea"],
-					["joë", "joël"],
-					["am", "amos"],
-					["ob", "obad", "obadja"],
-					["jon", "jona"],
-					["mi", "micha"],
-					["na", "nah", "nahum"],
-					["hab", "habakuk"],
-					["ze", "zef", "zefanja"],
-					["hag", "haggaï"],
-					["za", "zach", "zacharia"],
-					["mal", "maleachi"],
-					["mt", "matth", "mattheüs"],
-					["mr", "mark", "markus"],
-					["lu", "luk", "lukas"],
-					["jo", "joh", "johannes"],
-					["han", "hand", "handelingen"],
-					["ro", "rom", "romeinen"],
-					["1kor", "1korinthiërs"],
-					["2kor", "2korinthiërs"],
-					["ga", "gal", "galaten"],
-					["ef", "efeziërs"],
-					["fil", "filippenzen"],
-					["kol", "kolossenzen"],
-					["1th", "1thess", "1thessalonicenzen"],
-					["2th", "2thess", "2thessalonicenzen"],
-					["1ti", "1tim", "1timotheüs"],
-					["2ti", "2tim", "2timotheüs"],
-					["tit", "titus"],
-					["flm", "filem", "filemon"],
-					["heb", "hebr", "hebreeën"],
-					["jak", "jakobus"],
-					["1pe", "1petr", "1petrus"],
-					["2pe", "2petr", "2petrus"],
-					["1jo", "1joh", "1johannes"],
-					["2jo", "2joh", "2johannes"],
-					["3jo", "3joh", "3johannes"],
-					["ju", "jud", "judas"],
-					["opb", "openb", "openbaring"],
-				];
-
-				const bibleBooksFR = [
-					["ge", "gen", "genèse"],
-					["ex", "exode"],
-					["lv", "lev", "lévitique"],
-					["nb", "nomb", "nombres"],
-					["dt", "deut", "deuteronome"],
-					["jos", "jos", "josué"],
-					["jg", "juges"],
-					["ru", "ruth"],
-					["1s", "1sam", "1samuel"],
-					["2s", "2sam", "2samuel"],
-					["1r", "1rois"],
-					["2r", "2rois"],
-					["1ch", "1chron", "1chroniques"],
-					["2ch", "2chron", "2chroniques"],
-					["esd", "esdras"],
-					["ne", "neh", "néhémie"],
-					["est", "esther"],
-					["jb", "job"],
-					["ps", "psaumes"],
-					["pr", "prov", "proverbes"],
-					["ec", "eccl", "ecclésiaste"],
-					["ct", "chant de S", "Chant de Salomon"],
-					["is", "isïe"],
-					["jr", "jer", "jérémie"],
-					["la", "lam", "lamentations"],
-					["ez", "ezech", "ézechiel"],
-					["da", "dan", "daniel"],
-					["os", "osée"],
-					["jl", "joël"],
-					["am", "amos"],
-					["ab", "abd", "abdias"],
-					["jon", "jonas"],
-					["mi", "mich", "michée"],
-					["na", "nah", "nahum"],
-					["hab", "habacuc"],
-					["sph", "soph", "sophonie"],
-					["ag", "agg", "aggée"],
-					["za", "zach", "zacharie"],
-					["ml", "mal", "malachie"],
-					["mt", "mat", "matthieu"],
-					["mc", "marc"],
-					["lc", "luc"],
-					["jean", "jean"],
-					["ac", "actes"],
-					["rm", "rom", "romains"],
-					["1co", "1cor", "1corinthiens"],
-					["2co", "2cor", "2corinthiens"],
-					["ga", "gal", "galate"],
-					["eph", "éphesiens"],
-					["php", "phil", "philippiens"],
-					["col", "colossiens"],
-					["1th", "1thess", "1thessaloniciens"],
-					["2th", "2thess", "2thessaloniciens"],
-					["1tm", "1tim", "1timothée"],
-					["2tm", "2tim", "2timothée"],
-					["tt", "tite"],
-					["phm", "philem", "philemon"],
-					["he", "heb", "hébreux"],
-					["jc", "jacq", "jacques"],
-					["1p", "1pierre"],
-					["2p", "2pierre"],
-					["1j", "1jean"],
-					["2j", "2jean"],
-					["3j", "3jean"],
-					["jude", "jude"],
-					["re", "rev", "révélation"],
-				];
-
-				const bibleBooksPtBr = [
-					["gên", "gênesis"],
-					["êx", "êxo", "êxodo"],
-					["le", "lev", "levítico"],
-					["n", "núm", "números"],
-					["de", "deu", "deuteronômio"],
-					["jos", "josué"],
-					["jz", "juí", "juízes"],
-					["ru", "rute"],
-					["1sa", "1sam", "1samuel"],
-					["2sa", "2sam", "2samuel"],
-					["1rs", "1reis"],
-					["2rs", "2reis"],
-					["1cr", "1crô", "1crônicas"],
-					["2cr", "2crô", "2crônicas"],
-					["esd", "esd", "esdras"],
-					["ne", "nee", "neemias"],
-					["est", "ester"],
-					["jó"],
-					["sal", "salmos"],
-					["pr", "pro", "provérbios"],
-					["ec", "ecl", "eclesiastes"],
-					["cân", "cântico de salomão"],
-					["is", "isa", "isaías"],
-					["je", "jer", "jeremias"],
-					["la", "lam", "lamentações"],
-					["ez", "eze", "ezequiel"],
-					["da", "dan", "daniel"],
-					["os", "ose", "oseias"],
-					["jl", "joel"],
-					["am", "amós"],
-					["ob", "obd", "obadias"],
-					["jon", "jonas"],
-					["miq", "miq", "miqueias"],
-					["na", "naum"],
-					["hab", "habacuque"],
-					["sof", "sofonias"],
-					["ag", "ageu"],
-					["za", "zac", "zacarias"],
-					["mal", "malaquias"],
-					["mt", "mat", "mateus"],
-					["mr", "mar", "marcos"],
-					["lu", "luc", "lucas"],
-					["jo", "joão"],
-					["at", "atos"],
-					["ro", "rom", "romanos"],
-					["1co", "1cor", "1coríntios"],
-					["2co", "2cor", "2coríntios"],
-					["gál", "gálatas"],
-					["ef", "efé", "efésios"],
-					["fil", "filipenses"],
-					["col", "colossenses"],
-					["1te", "1tes", "1tessalonicenses"],
-					["2te", "2tes", "2tessalonicenses"],
-					["1ti", "1tim", "1timóteo"],
-					["2ti", "2tim", "2timóteo"],
-					["tit", "tito"],
-					["flm", "filêm", "filêmon"],
-					["he", "heb", "hebreus"],
-					["tg", "tia", "tiago"],
-					["1pe", "1ped", "1pedro"],
-					["2pe", "2ped", "2pedro"],
-					["1jo", "1joão"],
-					["2jo", "2joão"],
-					["3jo", "3joão"],
-					["ju", "judas"],
-					["ap", "apo", "apocalipse"],
-				];
-
-				const bibleBooksDE = [
-					["1mo", "1mose"],
-					["2mo", "2mose"],
-					["3mo", "3mose"],
-					["4mo", "4mose"],
-					["5mo", "5mose"],
-					["jos", "josua"],
-					["ri", "richter"],
-					["ru", "ruth"],
-					["1sam", "1samuel"],
-					["2sam", "2samuel"],
-					["1kö", "1könige"],
-					["2kö", "2könige"],
-					["1chr", "1chronika"],
-					["2chr", "2chronika"],
-					["es", "esra"],
-					["neh", "nehemia"],
-					["esth", "esther"],
-					["hi", "hiob"],
-					["ps", "psalmen"],
-					["spr", "sprüche"],
-					["pred", "prediger"],
-					["hoh", "hohes lied"],
-					["jes", "jesaja"],
-					["jer", "jeremia"],
-					["klag", "klagelieder"],
-					["hes", "hesekiel"],
-					["dan", "daniel"],
-					["hos", "hosea"],
-					["joe", "joel"],
-					["am", "amos"],
-					["ob", "obadja"],
-					["jon", "jona"],
-					["mi", "micha"],
-					["nah", "nahum"],
-					["hab", "habakuk"],
-					["zeph", "zephanja"],
-					["hag", "haggai"],
-					["sach", "sacharja"],
-					["mal", "maleachi"],
-					["mat", "matthäus"],
-					["mar", "markus"],
-					["luk", "lukas"],
-					["joh", "johannes"],
-					["apg", "apostelgeschichte"],
-					["röm", "römer"],
-					["1kor", "1korinther"],
-					["2kor", "2korinther"],
-					["gal", "galater"],
-					["eph", "epheser"],
-					["phil", "philipper"],
-					["kol", "kolosser"],
-					["1thes", "1thessalonicher"],
-					["2thes", "2thessalonicher"],
-					["1tim", "1timotheus"],
-					["2tim", "2timotheus"],
-					["tit", "titus"],
-					["phi", "philem", "philemon"],
-					["heb", "hebräer"],
-					["jak", "jakobus"],
-					["1pet", "1petrus"],
-					["2pet", "2petrus"],
-					["1joh", "1johannes"],
-					["2joh", "2johannes"],
-					["3joh", "3johannes"],
-					["jud", "judas"],
-					["offb", "offenbarung"],
-				];
-				const bibleBooksFI = [
-					["1mo", "1moos", "1mooseksen"],
-					["2mo", "2moos", "2mooseksen"],
-					["3mo", "3moos", "3mooseksen"],
-					["4mo", "4moos", "4mooseksen"],
-					["5mo", "5moos", "5mooseksen"],
-					["jos", "joos", "joosuan"],
-					["tu", "tuom", "tuomarien"],
-					["ru", "ruut", "ruutin"],
-					["1sa", "1sam", "1samuelin"],
-					["2sa", "2sam", "2samuelin"],
-					["1ku", "1kun", "1kuninkaiden"],
-					["2ku", "2kun", "2kuninkaiden"],
-					["1ai", "1aik", "1aikakirjan"],
-					["2ai", "2aik", "2aikakirjan"],
-					["esr", "esra", "esran"],
-					["ne", "nehe", "neh", "nehemian"],
-					["est", "esterin"],
-					["job", "jobin"],
-					["ps", "psalmit", "psalmien"],
-					["san", "sanan", "sananlaskujen"],
-					["sr", "saarn", "saarnajan"],
-					["lal", "laul", "laulujen"],
-					["jes", "js", "jesajan"],
-					["jer", "jr", "jeremian"],
-					["va", "val", "valit", "valituslaulut"],
-					["hes", "hesekielin"],
-					["da", "danielin"],
-					["ho", "hoosean"],
-					["jl", "joel", "joelin"],
-					["am", "aam", "amos", "aamos", "amoksen"],
-					["ob", "obadjan"],
-					["jn", "joo", "jonan"],
-					["mi", "miik", "miikan"],
-					["na", "nah", "nahumin"],
-					["hab", "habakukin"],
-					["sef", "sf", "sefanian"],
-					["hag", "hg", "haggain"],
-					["sak", "sakarjan"],
-					["mal", "malakian"],
-					["mt", "mat", "matt", "matteuksen"],
-					["mr", "mark", "markuksen"],
-					["lu", "luuk", "luukkaan"],
-					["joh", "johanneksen"],
-					["ap", "apt", "apost", "apostolien"],
-					["ro", "room", "rm", "roomalaisille"],
-					["1ko", "1kor", "1korinttilaisille"],
-					["2ko", "2kor", "2korinttilaisille"],
-					["ga", "gal", "galatalaisille"],
-					["ef", "efesolaisille"],
-					["fil", "filip", "filippiläisille"],
-					["kol", "kolos", "kolossalaisille"],
-					["1te", "1tes", "1tess", "1tessalonikalaisille"],
-					["2te", "2tes", "2tess", "2tessalonikalaisille"],
-					["1ti", "1tim", "1timoteukselle"],
-					["2ti", "2tim", "2timoteukselle"],
-					["tit", "titukselle"],
-					["flm", "file", "filemonille"],
-					["hpr", "hepr", "heprealaisille"],
-					["ja", "jaak", "jaa", "jaakobin"],
-					["1pi", "1piet", "1pietarin"],
-					["2pi", "2piet", "2pietarin"],
-					["1jo", "1joh", "1johanneksen"],
-					["2jo", "2joh", "2johanneksen"],
-					["3jo", "3joh", "3johanneksen"],
-					["ju", "juu", "juudaksen"],
-					["il", "ilm", "ilmestys"]
-				];
-
-				let bibleBooks = bibleBooksEN;
-
-				if (this.settings.pluginLanguage == "nl") {
-					bibleBooks = bibleBooksNL;
-				} else if (this.settings.pluginLanguage == "fr") {
-					bibleBooks = bibleBooksFR;
-				} else if (this.settings.pluginLanguage == "pt-br") {
-					bibleBooks = bibleBooksPtBr;
-				} else if (this.settings.pluginLanguage == "de") {
-					bibleBooks = bibleBooksDE;
-				} else if (this.settings.pluginLanguage == "fi") {
-					bibleBooks = bibleBooksFI;
-				}
+				let bibleBooks = bibleBooksMap[this.settings.bibleLanguage || "en"];
 
 				let linkOutput = "";
 				let context = "";
 				let bibleBookLong;
 				let bibleBookHasNumber = false;
 
-				if ([1, 2, 3, 4, 5].includes(parseInt(input.substring(0, 1)))) {
-					if (input.substring(1, 2) == " ") {
-						input = input.substring(0, 1) + input.substring(2);
-					}
-					bibleBookHasNumber = true;
+				const bibleBookPattern = /^(\d?\s?\w+)\s(\d+):(\d+)([-,]?\d+)?/i;
+				const match = input.match(bibleBookPattern);
+
+				if (!match) {
+					throw new Error("Invalid input format");
 				}
 
-				const bibleBookQuery = input.split(" ")[0].toLowerCase();
+				let [_, book, chapter, verse, verseContinue] = match;
+
+				book = book.replace(/\s/g, "").toLowerCase();
 				for (let i = 0; i < bibleBooks.length; i++) {
-					if (bibleBooks[i].includes(bibleBookQuery)) {
-						if ((i + 1).toString().length == 1) {
-							linkOutput += "0" + (i + 1);
-						} else {
-							linkOutput += i + 1;
-						}
+					if (bibleBooks[i].includes(book)) {
+						linkOutput += (i + 1).toString().padStart(2, "0");
 						bibleBookLong = bibleBooks[i][bibleBooks[i].length - 1];
-						i = bibleBooks.length;
+						break;
 					}
 				}
 
-				let chapter = input.split(" ")[1];
-				chapter = chapter.split(":")[0];
-				if (chapter.length == 1) {
-					linkOutput += "00" + chapter;
-				} else if (chapter.length == 2) {
-					linkOutput += "0" + chapter;
-				} else {
-					linkOutput += chapter;
-				}
-
+				linkOutput += chapter.padStart(3, "0");
 				context += linkOutput;
+				linkOutput += verse.padStart(3, "0");
 
-				let verse = input.split(" ")[1];
-				verse = verse.split(":")[1];
-				if (verse.includes("-")) {
-					verse = verse.split("-")[0];
-				} else if (input.includes(",")) {
-					verse = verse.split(",")[0];
-				}
-				if (verse.length == 1) {
-					linkOutput += "00" + verse;
-				} else if (verse.length == 2) {
-					linkOutput += "0" + verse;
-				} else {
-					linkOutput += verse;
-				}
-
-				let verseContinue = "";
-
-				if (input.includes("-")) {
-					verseContinue = input.split("-")[1];
-				} else if (input.includes(",")) {
-					verseContinue = input.split(",")[1];
-					if (verseContinue.substring(0, 1) == " ") {
-						verseContinue = verseContinue.substring(1);
-					}
-				}
-				if (verseContinue != undefined && verseContinue != "") {
-					linkOutput += "-" + context;
-					if (verseContinue.length == 1) {
-						linkOutput += "00" + verseContinue;
-					} else if (verseContinue.length == 2) {
-						linkOutput += "0" + verseContinue;
-					} else {
-						linkOutput += verseContinue;
-					}
+				if (verseContinue) {
+					verseContinue = verseContinue.replace(/[-,]/, "").trim();
+					linkOutput += "-" + context + verseContinue.padStart(3, "0");
 				}
 
 				let renderOutput;
 
 				if (this.settings.expandBibleBookName) {
-					if (
-						this.settings.addSpaceAfterBibleBookNumber &&
-						bibleBookHasNumber
-					) {
-						renderOutput =
-							bibleBookLong?.substring(0, 1) +
-							" " +
-							bibleBookLong?.slice(1) +
-							" " +
-							input.split(" ")[1];
-						if (input.split(" ")[2]) {
-							renderOutput += " " + input.split(" ")[2];
-						}
+					if (this.settings.addSpaceAfterBibleBookNumber && /\d/.test(book)) {
+						renderOutput = bibleBookLong?.substring(0, 1) + " " + bibleBookLong?.slice(1) + " " + chapter + ":" + verse;
 					} else {
-						renderOutput =
-							bibleBookLong + " " + input.split(" ")[1];
-						if (input.split(" ")[2]) {
-							renderOutput += " " + input.split(" ")[2];
-						}
+						renderOutput = bibleBookLong + " " + chapter + ":" + verse;
 					}
 				} else {
-					if (
-						this.settings.addSpaceAfterBibleBookNumber &&
-						bibleBookHasNumber
-					) {
-						renderOutput =
-							input.substring(0, 1) + " " + input.slice(1);
-					} else {
-						renderOutput = input;
-					}
+					renderOutput = book + " " + chapter + ":" + verse;
 				}
 
 				if (this.settings.capitalizeFirstCharBibleBookName) {
-					if (bibleBookHasNumber) {
-						if (this.settings.addSpaceAfterBibleBookNumber) {
-							renderOutput =
-								renderOutput.substring(0, 2) +
-								renderOutput.charAt(2).toUpperCase() +
-								renderOutput.slice(3);
-						} else {
-							renderOutput =
-								renderOutput.substring(0, 1) +
-								renderOutput.charAt(1).toUpperCase() +
-								renderOutput.slice(2);
-						}
-					} else {
-						renderOutput =
-							renderOutput.charAt(0).toUpperCase() +
-							renderOutput.slice(1);
-					}
+					renderOutput = renderOutput.charAt(0).toUpperCase() + renderOutput.slice(1);
 				}
 
 				if (this.settings.makeBold) {
@@ -690,33 +190,26 @@ export default class BibleLinkerPro extends Plugin {
 					renderOutput = "*" + renderOutput + "*";
 				}
 
-				renderOutput =
-					this.settings.linkPrefix +
-					renderOutput +
-					this.settings.linkSuffix;
+				renderOutput = this.settings.linkPrefix + renderOutput + this.settings.linkSuffix;
 
 				editor.replaceSelection(
-					"[" +
-						renderOutput +
-						"](jwlibrary:///finder?bible=" +
-						linkOutput +
-						")"
+					"[" + renderOutput + "](jwlibrary:///finder?bible=" + linkOutput + ")"
 				);
 
 				if (this.settings.autoOpenLink) {
 					window.open("jwlibrary:///finder?bible=" + linkOutput);
 				}
 			} catch (error) {
-				//If an error occurs, replace text with initial input
-				if (input != null) {
-					editor.replaceSelection(input);
-				}
+					// If an error occurs, replace text with initial input
+					if (input != null) {
+						editor.replaceSelection(input);
+					}
 
-				//Show error modal
-				errorModal.setText(this.getTranslation("INVALID_INPUT"));
-				errorModal.open();
-			}
-		};
+					// Show error modal
+					errorModal.setText(this.getTranslation("INVALID_INPUT"));
+					errorModal.open();
+				}
+			};
 
 		// This adds an editor command that can perform some operation on the current editor instance
 		this.addCommand({
